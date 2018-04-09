@@ -1,0 +1,46 @@
+1. The execution slows down dramatically as we attempt to pass in larger values
+of N. This happens because we are using a recursive function with two branches,
+so our algorthim has an exponential runtime complexity with respect to N. This
+could be solved by using a dynamic programming algorithm, but the restriction on
+setf prevents us from doing this.
+
+2. SUMS(N)=PAD(N)-1. This is because PAD will recurse down until it terminates
+at a value of one, so the final expression that pad returns will be of the form
+1 + 1 + 1 + ... + 1 = result. Thus if the result is some number n, there will
+be n-1 summation operations performed, adding one each time, in order to obtain
+the result. Therefore SUMS(N) will always be one less than PAD(N).
+
+3. Running sbcl < hw1.lsp results in the following return values for the ANON
+test cases.
+
+*
+?
+*
+?
+*
+(((? ?) ?) ?)
+*
+(? ? ? ?)
+*
+(? (? ?) ?)
+*
+(((? ?) (? ?)) (? ?))
+*
+(? (? (? (? ?))))
+
+This matches the desired
+
+> (ANON '42)
+?
+> (ANON 'FOO)
+?
+> (ANON '(((L E) F) T))
+(((? ?) ?) ?)
+> (ANON '(5 FOO 3.1 -0.2))
+(? ? ? ?)
+> (ANON '(1 (FOO 3.1) -0.2))
+(? (? ?) ?)
+> (ANON '(((1 2) (FOO 3.1)) (BAR -0.2)))
+(((? ?) (? ?)) (? ?))
+> (ANON '(R (I (G (H T)))))
+(? (? (? (? ?))))
