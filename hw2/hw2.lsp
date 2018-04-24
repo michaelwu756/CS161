@@ -103,7 +103,7 @@
 ; states and NIL otherwise.
 (defun ON-PATH (S STATES)
   (cond ((null STATES) NIL)
-        ((equal S (car STATES)) T)
+        ((equal S (car STATES)))
         ((ON-PATH S (cdr STATES)))))
 
 ; MULT-DFS is a helper function for DFS. It takes two arguments: a list of
