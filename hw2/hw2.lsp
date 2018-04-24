@@ -132,5 +132,13 @@
 ; ensuring that the depth-first search does not revisit a node already on the
 ; search path.
 (defun DFS (S PATH)
-  (cond ((FINAL-STATE s) path)
+  (cond ((null PATH) (DFS S (List S)))
+        ((FINAL-STATE s) path)
         ((MULT-DFS (SUCC-FN S) PATH))))
+
+;;; Test cases
+(DFS '(NIL NIL NIL NIL) NIL) ; original problem
+(DFS '(T NIL NIL NIL) NIL) ; starting in invalid state
+(DFS '(T T T T) NIL) ; starting in final state
+(DFS '(NIL NIL NIL T) NIL) ; starting in unused state
+(DFS '(NIL NIL NIL NIL) '((T T NIL NIL) (NIL NIL NIL NIL))) ; check prev state

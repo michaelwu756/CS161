@@ -12,3 +12,20 @@
 (T E H R E)
 * (BFS '((A ((C ((E) D)) B))))
 (A B C D E)
+
+2. I created some test cases and ran them, getting the output shown below.
+
+* (DFS '(NIL NIL NIL NIL) NIL) ; original problem
+((NIL NIL NIL NIL) (T T NIL NIL) (NIL T NIL NIL) (T T T NIL) (NIL NIL T NIL)
+ (T NIL T T) (NIL NIL T T) (T T T T))
+* (DFS '(T NIL NIL NIL) NIL) ; starting in invalid state
+NIL
+* (DFS '(T T T T) NIL) ; starting in final state
+((T T T T))
+* (DFS '(NIL NIL NIL T) NIL) ; starting in unused state
+((NIL NIL NIL T) (T T NIL T) (NIL T NIL NIL) (T T T NIL) (NIL NIL T NIL)
+ (T NIL T T) (NIL NIL T T) (T T T T))
+* (DFS '(NIL NIL NIL NIL) '((T T NIL NIL) (NIL NIL NIL NIL))) ; check prev state
+NIL
+
+These results match the intendet functionality of the depth-first search.
