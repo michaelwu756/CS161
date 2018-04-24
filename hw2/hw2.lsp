@@ -14,14 +14,10 @@
 ;;; Return Value:
 ;;;   A list of leaf nodes in FRINGE as they are visited in BFS.
 (defun BFS (FRINGE)
-  (cond ((null FRINGE) nil) ; for base case of recursion
+  (cond ((null FRINGE) NIL)
         ((atom FRINGE) FRINGE)
-        ((atom (car FRINGE))
-         (cons (car FRINGE) (BFS (cdr FRINGE)))) ; first element is atom, leave
-                                                 ; it and recurse on remaining
-        (t (BFS (append (cdr FRINGE) (car FRINGE)))))) ; otherwise expand first
-                                                       ; element and place at
-                                                       ; back of list
+        ((atom (car FRINGE)) (cons (car FRINGE) (BFS (cdr FRINGE))))
+        ((BFS (append (cdr FRINGE) (car FRINGE))))))
 
 ;;; Test cases
 (BFS '(ROOT))
@@ -59,8 +55,8 @@
 
 ; FINAL-STATE takes a single argument S, the current state, and returns T if it
 ; is the goal state (T T T T) and NIL otherwise.
-;(defun FINAL-STATE (S)
-;    ...)
+(defun FINAL-STATE (S)
+  (equal S '(T T T T)))
 
 ; NEXT-STATE returns the state that results from applying an operator to the
 ; current state. It takes three arguments: the current state (S), and which entity
@@ -68,26 +64,47 @@
 ; with dog, and p for homer with poison).
 ; It returns a list containing the state that results from that move.
 ; If applying this operator results in an invalid state (because the dog and baby,
-; or poisoin and baby are left unsupervised on one side of the river), or when the
+; or poison and baby are left unsupervised on one side of the river), or when the
 ; action is impossible (homer is not on the same side as the entity) it returns NIL.
 ; NOTE that next-state returns a list containing the successor state (which is
 ; itself a list); the return should look something like ((NIL NIL T T)).
-;(defun NEXT-STATE (S A)
-;    ...)
+(defun NEXT-STATE (S A)
+  (cond ((and (equal S '(NIL NIL NIL NIL)) (equal A 'b)) '((T T NIL NIL)))
+        ((and (equal S '(NIL NIL NIL T)) (equal A 'b)) '((T T NIL T)))
+        ((and (equal S '(NIL NIL NIL T)) (equal A 'd)) '((T NIL T T)))
+        ((and (equal S '(NIL NIL T NIL)) (equal A 'b)) '((T T T NIL)))
+        ((and (equal S '(NIL NIL T NIL)) (equal A 'p)) '((T NIL T T)))
+        ((and (equal S '(NIL NIL T T)) (equal A 'h)) '((T NIL T T)))
+        ((and (equal S '(NIL NIL T T)) (equal A 'b)) '((T T T T)))
+        ((and (equal S '(NIL T NIL NIL)) (equal A 'h)) '((T T NIL NIL)))
+        ((and (equal S '(NIL T NIL NIL)) (equal A 'd)) '((T T T NIL)))
+        ((and (equal S '(NIL T NIL NIL)) (equal A 'p)) '((T T NIL T)))
+        ((and (equal S '(T NIL T T)) (equal A 'h)) '((NIL NIL T T)))
+        ((and (equal S '(T NIL T T)) (equal A 'd)) '((NIL NIL NIL T)))
+        ((and (equal S '(T NIL T T)) (equal A 'p)) '((NIL NIL T NIL)))
+        ((and (equal S '(T T NIL NIL)) (equal A 'h)) '((NIL T NIL NIL)))
+        ((and (equal S '(T T NIL NIL)) (equal A 'b)) '((NIL NIL NIL NIL)))
+        ((and (equal S '(T T NIL T)) (equal A 'b)) '((NIL NIL NIL T)))
+        ((and (equal S '(T T NIL T)) (equal A 'p)) '((NIL T NIL NIL)))
+        ((and (equal S '(T T T NIL)) (equal A 'b)) '((NIL NIL T NIL)))
+        ((and (equal S '(T T T NIL)) (equal A 'd)) '((NIL T NIL NIL)))
+        ((and (equal S '(T T T T)) (equal A 'b)) '((NIL NIL T T)))))
 
 ; SUCC-FN returns all of the possible legal successor states to the current
 ; state. It takes a single argument (s), which encodes the current state, and
 ; returns a list of each state that can be reached by applying legal operators
 ; to the current state.
-;(defun SUCC-FN (S)
-;    ...)
+(defun SUCC-FN (S)
+  (append (NEXT-STATE S 'h) (NEXT-STATE S 'b) (NEXT-STATE S 'd) (NEXT-STATE S 'p)))
 
 ; ON-PATH checks whether the current state is on the stack of states visited by
 ; this depth-first search. It takes two arguments: the current state (S) and the
 ; stack of states visited by DFS (STATES). It returns T if s is a member of
 ; states and NIL otherwise.
-;(defun ON-PATH (S STATES)
-;    ...)
+(defun ON-PATH (S STATES)
+  (cond ((null STATES) NIL)
+        ((equal S (car STATES)) T)
+        ((ON-PATH S (cdr STATES)))))
 
 ; MULT-DFS is a helper function for DFS. It takes two arguments: a list of
 ; states from the initial state to the current state (PATH), and the legal
@@ -98,8 +115,13 @@
 ; turn. If any of those searches reaches the final state, MULT-DFS returns the
 ; complete path from the initial state to the goal state. Otherwise, it returns
 ; NIL.
-;(defun MULT-DFS (STATES PATH)
-;    ...)
+(defun MULT-DFS (STATES PATH)
+  (cond ((null STATES) NIL)
+        ((FINAL-STATE (car STATES)) (append PATH (list (car STATES))))
+        ((ON-PATH (car STATES) PATH) (MULT-DFS (cdr STATES) PATH))
+        ((MULT-DFS (SUCC-FN (car STATES)) (append PATH (list (car STATES)))))
+        ((MULT-DFS (cdr STATES) PATH))))
+
 
 ; DFS does a depth first search from a given state to the goal state. It
 ; takes two arguments: a state (S) and the path from the initial state to S
@@ -109,5 +131,6 @@
 ; responsible for checking if S is already the goal state, as well as for
 ; ensuring that the depth-first search does not revisit a node already on the
 ; search path.
-;(defun DFS (S PATH)
-;    ...)
+(defun DFS (S PATH)
+  (cond ((FINAL-STATE s) path)
+        ((MULT-DFS (SUCC-FN S) PATH))))
