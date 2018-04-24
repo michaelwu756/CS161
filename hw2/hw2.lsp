@@ -6,9 +6,30 @@
 ; Question 1 ;
 ;;;;;;;;;;;;;;
 
-; TODO: comment code
+;;; BFS takes a list representation of a tree FRINGE and returns a list of leaf
+;;; nodes in FRINGE as they are visited in leftmost first breadth-first search.
+
+;;; Parameters:
+;;;   FRINGE - list representation of tree
+;;; Return Value:
+;;;   A list of leaf nodes in FRINGE as they are visited in BFS.
 (defun BFS (FRINGE)
-    ...)
+  (cond ((null FRINGE) nil) ; for base case of recursion
+        ((atom FRINGE) FRINGE)
+        ((atom (car FRINGE))
+         (cons (car FRINGE) (BFS (cdr FRINGE)))) ; first element is atom, leave
+                                                 ; it and recurse on remaining
+        (t (BFS (append (cdr FRINGE) (car FRINGE)))))) ; otherwise expand first
+                                                       ; element and place at
+                                                       ; back of list
+
+;;; Test cases
+(BFS '(ROOT))
+(BFS '((((L E) F) T)))
+(BFS '((R (I (G (H T))))))
+(BFS '(((A (B)) C (D))))
+(BFS '((T (H R E) E)))
+(BFS '((A ((C ((E) D)) B))))
 
 ;;;;;;;;;;;;;;
 ; Question 2 ;
@@ -19,7 +40,7 @@
 ; problem. In this implementation, a state is represented by a single list
 ; (homer baby dog poison), where each variable is T if the respective entity is
 ; on the west side of the river, and NIL if it is on the east side.
-; Thus, the initial state for this problem is (NIL NIL NIL NIL) (everybody 
+; Thus, the initial state for this problem is (NIL NIL NIL NIL) (everybody
 ; is on the east side) and the goal state is (T T T T).
 
 ; The main entry point for this solver is the function DFS, which is called
@@ -29,8 +50,8 @@
 ; initial state and the last element is the goal state. Each intermediate state
 ; is the state that results from applying the appropriate operator to the
 ; preceding state. If there is no solution, DFS returns NIL.
-; To call DFS to solve the original problem, one would call 
-; (DFS '(NIL NIL NIL NIL) NIL) 
+; To call DFS to solve the original problem, one would call
+; (DFS '(NIL NIL NIL NIL) NIL)
 ; However, it should be possible to call DFS with a different initial
 ; state or with an initial path.
 
@@ -38,35 +59,35 @@
 
 ; FINAL-STATE takes a single argument S, the current state, and returns T if it
 ; is the goal state (T T T T) and NIL otherwise.
-(defun FINAL-STATE (S)
-    ...)
+;(defun FINAL-STATE (S)
+;    ...)
 
 ; NEXT-STATE returns the state that results from applying an operator to the
 ; current state. It takes three arguments: the current state (S), and which entity
-; to move (A, equal to h for homer only, b for homer with baby, d for homer 
-; with dog, and p for homer with poison). 
+; to move (A, equal to h for homer only, b for homer with baby, d for homer
+; with dog, and p for homer with poison).
 ; It returns a list containing the state that results from that move.
 ; If applying this operator results in an invalid state (because the dog and baby,
 ; or poisoin and baby are left unsupervised on one side of the river), or when the
 ; action is impossible (homer is not on the same side as the entity) it returns NIL.
 ; NOTE that next-state returns a list containing the successor state (which is
 ; itself a list); the return should look something like ((NIL NIL T T)).
-(defun NEXT-STATE (S A)
-    ...)
+;(defun NEXT-STATE (S A)
+;    ...)
 
 ; SUCC-FN returns all of the possible legal successor states to the current
 ; state. It takes a single argument (s), which encodes the current state, and
 ; returns a list of each state that can be reached by applying legal operators
 ; to the current state.
-(defun SUCC-FN (S)
-    ...)
+;(defun SUCC-FN (S)
+;    ...)
 
 ; ON-PATH checks whether the current state is on the stack of states visited by
 ; this depth-first search. It takes two arguments: the current state (S) and the
 ; stack of states visited by DFS (STATES). It returns T if s is a member of
 ; states and NIL otherwise.
-(defun ON-PATH (S STATES)
-    ...)
+;(defun ON-PATH (S STATES)
+;    ...)
 
 ; MULT-DFS is a helper function for DFS. It takes two arguments: a list of
 ; states from the initial state to the current state (PATH), and the legal
@@ -77,8 +98,8 @@
 ; turn. If any of those searches reaches the final state, MULT-DFS returns the
 ; complete path from the initial state to the goal state. Otherwise, it returns
 ; NIL.
-(defun MULT-DFS (STATES PATH)
-    ...)
+;(defun MULT-DFS (STATES PATH)
+;    ...)
 
 ; DFS does a depth first search from a given state to the goal state. It
 ; takes two arguments: a state (S) and the path from the initial state to S
@@ -88,6 +109,5 @@
 ; responsible for checking if S is already the goal state, as well as for
 ; ensuring that the depth-first search does not revisit a node already on the
 ; search path.
-(defun DFS (S PATH)
-    ...)
-    
+;(defun DFS (S PATH)
+;    ...)

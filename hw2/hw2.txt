@@ -1,0 +1,14 @@
+1. My function runs correctly on the test cases and outputs the following
+
+* (BFS '(ROOT))
+(ROOT)
+* (BFS '((((L E) F) T)))
+(T F L E)
+* (BFS '((R (I (G (H T))))))
+(R I G H T)
+* (BFS '(((A (B)) C (D))))
+(C A D B)
+* (BFS '((T (H R E) E)))
+(T E H R E)
+* (BFS '((A ((C ((E) D)) B))))
+(A B C D E)
