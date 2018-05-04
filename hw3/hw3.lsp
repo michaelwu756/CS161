@@ -168,19 +168,16 @@
 	);end cond
   );end
 
-; EXERCISE: Modify this function to return true (t)
-; if and only if s is a goal state of a Sokoban game.
-; (no box is on a non-goal square)
-;
-; Currently, it always returns NIL. If A* is called with
-; this function as the goal testing function, A* will never
-; terminate until the whole search space is exhausted.
-;
+;;; goal-test (s)
+;;;
+;;; Return true (t) if and only if s is a goal state of a Sokoban
+;;; game. Works by looping through s and checking that there are no boxes not
+;;; on a star
 (defun goal-test (s)
   (cond ((null s))
         ((null (car s)) (goal-test (cdr s)))
         ((isBox (car (car s))) nil)
-        ((goal-test (cons (cdr (car s)) (cdr s))))));end defun
+        ((goal-test (cons (cdr (car s)) (cdr s))))))
 
 ; EXERCISE: Modify this function to return the list of
 ; sucessor states of s.
