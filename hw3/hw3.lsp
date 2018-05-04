@@ -203,17 +203,17 @@
 	 (x (car pos))
 	 (y (cadr pos))
 	 ;x and y are now the coordinate of the keeper in s.
-	 (result nil);(list (try-move s x (- y 1))
-                  ;     (try-move s x (+ y 1))
-                   ;    (try-move s (- x 1) y)
-                    ;   (try-move s (+ x 1) y)))
+	 (result nil);(list (try-move s x y x (- y 1))
+                  ;     (try-move s x y x (+ y 1))
+                   ;    (try-move s x y (- x 1) y)
+                    ;   (try-move s x y (+ x 1) y)))
 	 );
     (cleanUpList result);end
     );end let
   );
 
 ;;; get-square (s x y)
-
+;;;
 ;;; Takes a state s and coordinates x and y. Returns the number at the square
 ;;; given by x and y. The x axis begins at 0 and increases going to the
 ;;; right. The y axis begins at 0 and increases going downwards.
@@ -226,18 +226,44 @@
         ((> x 0) (get-square (list (cdr (car s))) (- x 1) y))
         ((car (car s)))))
 
+;;; set-square (s x y v)
+;;;
+;;; Takes a state s, coordinates x and y, and a value v. Returns the state s
+;;; with the element at coordinate x and y replaced by value v. The x axis
+;;; begins at 0 and increases goingto the right. The y axis begins at 0 and
+;;; increases going downwards.
+(defun set-square (s x y v)
+  (cond ((null s) s)
+        ((null (car s)) s)
+        ((< y 0) s)
+        ((< x 0) s)
+        ((> y 0) (cons (car s) (set-square (cdr s) x (- y 1) v)))
+        ((> x 0) (cons (cons (car (car s))
+                             (car (set-square (list (cdr (car s))) (- x 1) y v)))
+                       (cdr s)))
+        ((cons (cons v (cdr (car s))) (cdr s)))))
 
-; EXERCISE: Modify this function to compute the trivial
-; admissible heuristic.
-;
+;;; h0 (s)
+;;;
+;;; Takes a state s and returns the trivial admissible heuristic, 0.
 (defun h0 (s)
   0)
 
-; EXERCISE: Modify this function to compute the
-; number of misplaced boxes in s.
-;
+;;; h1-helper (s c)
+;;;
+;;; Takes a state s and a count c, and returns c plus the number of misplaced
+;;; boxes in s
+(defun h1-helper (s c)
+  (cond ((null s) c)
+        ((null (car s)) (h1-helper (cdr s) c))
+        ((isBox (car (car s))) (h1-helper (cons (cdr (car s)) (cdr s)) (+ c 1)))
+        ((h1-helper (cons (cdr (car s)) (cdr s)) c))))
+
+;;; h1 (s)
+;;;
+;;; Takes a state s and returns the number of misplaced boxes in s
 (defun h1 (s)
-  )
+  (h1-helper s 0))
 
 ; EXERCISE: Change the name of this function to h<UID> where
 ; <UID> is your actual student ID number. Then, modify this
