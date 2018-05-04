@@ -172,7 +172,7 @@
 ;;;
 ;;; Return true (t) if and only if s is a goal state of a Sokoban
 ;;; game. Works by looping through s and checking that there are no boxes not
-;;; on a star
+;;; on a star.
 (defun goal-test (s)
   (cond ((null s))
         ((null (car s)) (goal-test (cdr s)))
@@ -203,11 +203,29 @@
 	 (x (car pos))
 	 (y (cadr pos))
 	 ;x and y are now the coordinate of the keeper in s.
-	 (result nil)
-	 )
+	 (result nil);(list (try-move s x (- y 1))
+                  ;     (try-move s x (+ y 1))
+                   ;    (try-move s (- x 1) y)
+                    ;   (try-move s (+ x 1) y)))
+	 );
     (cleanUpList result);end
-   );end let
+    );end let
   );
+
+;;; get-square (s x y)
+
+;;; Takes a state s and coordinates x and y. Returns the number at the square
+;;; given by x and y. The x axis begins at 0 and increases going to the
+;;; right. The y axis begins at 0 and increases going downwards.
+(defun get-square (s x y)
+  (cond ((null s) wall)
+        ((null (car s)) wall)
+        ((< y 0) wall)
+        ((< x 0) wall)
+        ((> y 0) (get-square (cdr s) x (- y 1)))
+        ((> x 0) (get-square (list (cdr (car s))) (- x 1) y))
+        ((car (car s)))))
+
 
 ; EXERCISE: Modify this function to compute the trivial
 ; admissible heuristic.
