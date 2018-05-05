@@ -286,9 +286,7 @@
 ;;; h1-helper (s c)
 ;;;
 ;;; Takes a state s and a count c, and returns c plus the number of misplaced
-;;; boxes in s. This is an admissible heuristic, since each box unplaced box
-;;; requires at least one move to finish. Recurses in a similar way to
-;;; goal-test.
+;;; boxes in s. Recurses in a similar way to goal-test.
 (defun h1-helper (s c)
   (cond ((null s) c)
         ((null (car s)) (h1-helper (cdr s) c))
@@ -298,7 +296,8 @@
 ;;; h1 (s)
 ;;;
 ;;; Takes a state s and returns the number of misplaced boxes in s by calling
-;;; the helper function.
+;;; the helper function. This is an admissible heuristic, since each box
+;;; unplaced box requires at least one move to finish.
 (defun h1 (s)
   (h1-helper s 0))
 
