@@ -301,47 +301,52 @@
 (defun h1 (s)
   (h1-helper s 0))
 
+(defun smaller (x y)
+  (if (< x y) x y))
 
-;;; h404751542 (s)
+(defun absdiff (x y)
+  (if (> (- x y) 0)
+      (- x y)
+    (- y x)))
+
 ;;;
-(defun isSolid (v)
-  (or (isBox v) (isWall v) (isBoxStar v)))
+(defun getStarListFirstRow (s r c)
+  (cond ((null (car s)) nil)
+        ((isStar (car (car s)))
+         (cons (list r c) (getStarListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1))))
+        ((getStarListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1)))))
 
-(defun makeWallList (length)
-  (if (= length 0) nil (cons wall (makeWallList (- length 1)))))
-
-(defun addHorizontalBorder (s)
-  (append (list (makeWallList (length (car s)))) s (list (makeWallList (length (car s))))))
-
-(defun addVerticalBorder (s)
-  (if (null s)
-      nil
-    (cons (append (list wall) (car s) (list wall)) (addVerticalBorder (cdr s)))))
-
-(defun deadlockSecondRow (s c)
+(defun getStarList (s r)
   (cond ((null s) nil)
-        ((null (cdr s)) nil)
-        ((null (nth c (car (cdr s)))) nil)
-        ((cond ((not (isBox (get-square s c 1))) nil)
-               ((and (isSolid (get-square s c 0)) (isSolid (get-square s (- c 1) 1))))
-               ((and (isSolid (get-square s c 0)) (isSolid (get-square s (+ c 1) 1))))
-               ((and (isSolid (get-square s c 2)) (isSolid (get-square s (- c 1) 1))))
-               ((and (isSolid (get-square s c 2)) (isSolid (get-square s (+ c 1) 1))))))
-        ((deadlockSecondRow s (+ c 1)))))
+        ((append (getStarListFirstRow s r 0) (getStarList (cdr s) (+ r 1))))))
 
-(defun deadlocked (s)
+(defun getDistanceToClosestStar (starList x y)
+  (cond ((null starList) -1)
+          ((= (getDistanceToClosestStar (cdr starList) x y) -1)
+           (+ (absdiff (car (car starList)) y) (absdiff (car (cdr (car starList))) x)))
+          ((smaller
+            (+ (absdiff (car (car starList)) y) (absdiff (car (cdr (car starList))) x))
+            (getDistanceToClosestStar (cdr starList) x y)))))
+
+(defun getBoxListFirstRow (s r c)
+  (cond ((null (car s)) nil)
+        ((isBox (car (car s)))
+         (cons (list r c) (getBoxListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1))))
+        ((getBoxListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1)))))
+
+(defun getBoxList (s r)
   (cond ((null s) nil)
-        ((deadlockSecondRow s 0))
-        ((deadlocked (cdr s)))))
+        ((append (getBoxListFirstRow s r 0) (getBoxList (cdr s) (+ r 1))))))
 
+(defun sumMinDistances (boxList starList)
+  (cond ((null boxList) 0)
+        ((+ (getDistanceToClosestStar starList (car (car boxList)) (car (cdr (car boxList))))
+            (sumMinDistances (cdr boxList) starList)))))
 ;;; h404751542 (s)
 ;;;
 ;;; Heuristic function that just calls h1.
 (defun h404751542 (s)
-  (h1 s))
-;  (if (deadlocked (addHorizontalBorder (addVerticalBorder s)))
-;      (+ (h1 s) 1)
-;    (+ (h1 s) 0)))
+  (sumMinDistances (getBoxList s 0) (getStarList s 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
