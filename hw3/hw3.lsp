@@ -301,6 +301,38 @@
 (defun h1 (s)
   (h1-helper s 0))
 
+
+;;; h404751542 (s)
+;;;
+(defun isSolid (v)
+  (or (isBox v) (isWall v) (isBoxStar v)))
+
+(defun makeWallList (length)
+  (if (= length 0) nil (cons wall (makeWallList (- length 1)))))
+
+(defun addHorizontalBorder (s)
+  (append (list (makeWallList (length (car s)))) s (list (makeWallList (length (car s))))))
+
+(defun addVerticalBorder (s)
+  (if (null s)
+      nil
+    (cons (append (list wall) (car s) (list wall)) (addVerticalBorder (cdr s)))))
+
+(defun deadlockSecondRow (s c)
+  (cond ((null s) nil)
+        ((null (cdr s)) nil)
+        ((null (nth c (car (cdr s)))) nil)
+        ((cond ((not (isBox (get-square s c 1))) nil)
+               ((and (isSolid (get-square s c 0)) (isSolid (get-square s (- c 1) 1))))
+               ((and (isSolid (get-square s c 0)) (isSolid (get-square s (+ c 1) 1))))
+               ((and (isSolid (get-square s c 2)) (isSolid (get-square s (- c 1) 1))))
+               ((and (isSolid (get-square s c 2)) (isSolid (get-square s (+ c 1) 1))))))
+        ((deadlockSecondRow s (+ c 1)))))
+
+(defun deadlocked (s)
+  (cond ((null s) nil)
+        ((deadlockSecondRow s 0))
+        ((deadlocked (cdr s)))))
 ; EXERCISE: Change the name of this function to h<UID> where
 ; <UID> is your actual student ID number. Then, modify this
 ; function to compute an admissible heuristic value of s.
@@ -311,7 +343,10 @@
 ; running time of a function call.
 ;
 (defun h404751542 (s)
-  )
+  (h1 s))
+;  (if (deadlocked (addHorizontalBorder (addVerticalBorder s)))
+;      (+ (h1 s) 1)
+;    (+ (h1 s) 0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
