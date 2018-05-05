@@ -333,15 +333,10 @@
   (cond ((null s) nil)
         ((deadlockSecondRow s 0))
         ((deadlocked (cdr s)))))
-; EXERCISE: Change the name of this function to h<UID> where
-; <UID> is your actual student ID number. Then, modify this
-; function to compute an admissible heuristic value of s.
-;
-; This function will be entered in the competition.
-; Objective: make A* solve problems as fast as possible.
-; The Lisp 'time' function can be used to measure the
-; running time of a function call.
-;
+
+;;; h404751542 (s)
+;;;
+;;; Heuristic function that just calls h1.
 (defun h404751542 (s)
   (h1 s))
 ;  (if (deadlocked (addHorizontalBorder (addVerticalBorder s)))
