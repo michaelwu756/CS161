@@ -279,7 +279,8 @@
 ;;; h1-helper (s c)
 ;;;
 ;;; Takes a state s and a count c, and returns c plus the number of misplaced
-;;; boxes in s
+;;; boxes in s. This is an admissible heuristic, since each box unplaced box
+;;; requires at least one move to finish.
 (defun h1-helper (s c)
   (cond ((null s) c)
         ((null (car s)) (h1-helper (cdr s) c))
