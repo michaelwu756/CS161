@@ -301,25 +301,46 @@
 (defun h1 (s)
   (h1-helper s 0))
 
+
+;;; smaller (x y)
+;;;
+;;; Returns the smaller integer out of x and y.
 (defun smaller (x y)
   (if (< x y) x y))
 
+;;; absdiff (x y)
+;;;
+;;; Returns the absolute difference between the integers x and y.
 (defun absdiff (x y)
   (if (> (- x y) 0)
       (- x y)
     (- y x)))
 
+;;; getStarListFirstRow (s r c)
 ;;;
+;;; Returns a list of coordinates corresponding to the stars in the first row of
+;;; s. The argument s is a truncated state with the first r rows removed and
+;;; the first c elements in rth row removed. This way the function can only look
+;;; at (car (car s)) per iteration, improving runtime efficiency.
 (defun getStarListFirstRow (s r c)
   (cond ((null (car s)) nil)
         ((isStar (car (car s)))
          (cons (list r c) (getStarListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1))))
         ((getStarListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1)))))
 
+;;; getStarList (s r)
+;;;
+;;; Returns a list of coordinates corresponding to the stars in state s,
+;;; assuming the first row of s is indexed with number r.
 (defun getStarList (s r)
   (cond ((null s) nil)
         ((append (getStarListFirstRow s r 0) (getStarList (cdr s) (+ r 1))))))
 
+;;; getDistanceToClosestStar (starList x y)
+;;;
+;;; Returns the smallest manhattan distance between a point given by the
+;;; coordinates x y and any star in starList. Starlist is a list of coordinates
+;;; corresponding to the locations of the stars in a given state.
 (defun getDistanceToClosestStar (starList x y)
   (cond ((null starList) -1)
           ((= (getDistanceToClosestStar (cdr starList) x y) -1)
@@ -328,23 +349,39 @@
             (+ (absdiff (car (car starList)) y) (absdiff (car (cdr (car starList))) x))
             (getDistanceToClosestStar (cdr starList) x y)))))
 
+;;; getBoxListFirstRow (s r c)
+;;;
+;;; Returns a list of coordinates corresponding to the boxes in the first row of
+;;; s. The argument s is a truncated state with the first r rows removed and
+;;; the first c elements in rth row removed. This way the function can only look
+;;; at (car (car s)) per iteration, improving runtime efficiency.
 (defun getBoxListFirstRow (s r c)
   (cond ((null (car s)) nil)
         ((isBox (car (car s)))
          (cons (list r c) (getBoxListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1))))
         ((getBoxListFirstRow (cons (cdr (car s)) (cdr s)) r (+ c 1)))))
 
+;;; getBoxList (s r)
+;;;
+;;; Returns a list of coordinates corresponding to the boxes in state s,
+;;; assuming the first row of s is indexed with number r.
 (defun getBoxList (s r)
   (cond ((null s) nil)
         ((append (getBoxListFirstRow s r 0) (getBoxList (cdr s) (+ r 1))))))
 
+;;; sumMinDistances (boxList starList)
+;;;
+;;; Takes every box coordinate in boxList, finds the minimum manhattan distance
+;;; to any star in starList for each box, and sums them together.
 (defun sumMinDistances (boxList starList)
   (cond ((null boxList) 0)
         ((+ (getDistanceToClosestStar starList (car (car boxList)) (car (cdr (car boxList))))
             (sumMinDistances (cdr boxList) starList)))))
+
 ;;; h404751542 (s)
 ;;;
-;;; Heuristic function that just calls h1.
+;;; Heuristic function that sums the manhattan distance to the closest star for
+;;; every box.
 (defun h404751542 (s)
   (sumMinDistances (getBoxList s 0) (getStarList s 0)))
 
