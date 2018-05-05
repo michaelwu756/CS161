@@ -170,9 +170,10 @@
 
 ;;; goal-test (s)
 ;;;
-;;; Return true (t) if and only if s is a goal state of a Sokoban
-;;; game. Works by looping through s and checking that there are no boxes not
-;;; on a star.
+;;; Return true (t) if and only if s is a goal state of a Sokoban game. Works by
+;;; looping through s and checking that there are no boxes not on a
+;;; star. Recurses by first iterating through the elements of (car s), then
+;;; checks (cdr s).
 (defun goal-test (s)
   (cond ((null s))
         ((null (car s)) (goal-test (cdr s)))
@@ -199,7 +200,9 @@
 ;;;
 ;;; Takes a state s and coordinates x and y. Returns the number at the square
 ;;; given by x and y. The x axis begins at 0 and increases going to the
-;;; right. The y axis begins at 0 and increases going downwards.
+;;; right. The y axis begins at 0 and increases going downwards. This uses
+;;; recursion by first recursing along the y axis, then the x axis. The base
+;;; case is at (0,0), where this returns (car (car s)).
 (defun get-square (s x y)
   (cond ((null s) wall)
         ((null (car s)) wall)
@@ -214,7 +217,8 @@
 ;;; Takes a state s, coordinates x and y, and a value v. Returns the state s
 ;;; with the element at coordinate x and y replaced by value v. The x axis
 ;;; begins at 0 and increases goingto the right. The y axis begins at 0 and
-;;; increases going downwards.
+;;; increases going downwards. Recurses in a similar way to get-square,
+;;; appending to the result of the recursive call so that the output is correct.
 (defun set-square (s x y v)
   (cond ((null s) s)
         ((null (car s)) s)
@@ -232,7 +236,10 @@
 ;;; and dy. Returns the state of the game after a valid move in the direction
 ;;; given by dx and dy, or nil if no valid move exists. Also returns nil if the
 ;;; keeper is not at (x,y). Valid directions for (dx, dy) are (0,1), (0,-1),
-;;; (1,0), and (-1,0).
+;;; (1,0), and (-1,0). Uses get-state and set-state to check the values at given
+;;; targets. If the square in front of the keeper is a star or blank, then a
+;;; move can take place. If a box is blocking the square in front of the keeper,
+;;; a further check must be made to the square past the target.
 (defun try-move (s x y dx dy)
   (let ((origin (get-square s x y))
         (target (get-square s (+ x dx) (+ y dy)))
@@ -280,7 +287,8 @@
 ;;;
 ;;; Takes a state s and a count c, and returns c plus the number of misplaced
 ;;; boxes in s. This is an admissible heuristic, since each box unplaced box
-;;; requires at least one move to finish.
+;;; requires at least one move to finish. Recurses in a similar way to
+;;; goal-test.
 (defun h1-helper (s c)
   (cond ((null s) c)
         ((null (car s)) (h1-helper (cdr s) c))
@@ -289,7 +297,8 @@
 
 ;;; h1 (s)
 ;;;
-;;; Takes a state s and returns the number of misplaced boxes in s
+;;; Takes a state s and returns the number of misplaced boxes in s by calling
+;;; the helper function.
 (defun h1 (s)
   (h1-helper s 0))
 
