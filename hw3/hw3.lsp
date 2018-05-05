@@ -179,38 +179,21 @@
         ((isBox (car (car s))) nil)
         ((goal-test (cons (cdr (car s)) (cdr s))))))
 
-; EXERCISE: Modify this function to return the list of
-; sucessor states of s.
-;
-; This is the top-level next-states (successor) function.
-; Some skeleton code is provided below.
-; You may delete them totally, depending on your approach.
-;
-; If you want to use it, you will need to set 'result' to be
-; the set of states after moving the keeper in each of the 4 directions.
-; A pseudo-code for this is:
-;
-; ...
-; (result (list (try-move s UP) (try-move s DOWN) (try-move s LEFT) (try-move s RIGHT)))
-; ...
-;
-; You will need to define the function try-move and decide how to represent UP,DOWN,LEFT,RIGHT.
-; Any NIL result returned from try-move can be removed by cleanUpList.
-;
-;
+;;; next-states (s)
+;;;
+;;; Returns a list of next states possible from the state s. This works by
+;;; creating a list of size four from the result of try-move in all four
+;;; directions. It then removes nil entries with cleanUpList.
 (defun next-states (s)
   (let* ((pos (getKeeperPosition s 0))
 	 (x (car pos))
 	 (y (cadr pos))
 	 ;x and y are now the coordinate of the keeper in s.
-	 (result nil);(list (try-move s x y x (- y 1))
-                  ;     (try-move s x y x (+ y 1))
-                   ;    (try-move s x y (- x 1) y)
-                    ;   (try-move s x y (+ x 1) y)))
-	 );
-    (cleanUpList result);end
-    );end let
-  );
+	 (result (list (try-move s x y 0 -1)
+                       (try-move s x y 0 1)
+                       (try-move s x y -1 0)
+                       (try-move s x y 1 0))))
+    (cleanUpList result)))
 
 ;;; get-square (s x y)
 ;;;
@@ -242,6 +225,50 @@
                              (car (set-square (list (cdr (car s))) (- x 1) y v)))
                        (cdr s)))
         ((cons (cons v (cdr (car s))) (cdr s)))))
+
+;;; try-move (s x y dx dy)
+;;;
+;;; Takes a state s, keeper coordinates x and y, and a direction specified by dx
+;;; and dy. Returns the state of the game after a valid move in the direction
+;;; given by dx and dy, or nil if no valid move exists. Also returns nil if the
+;;; keeper is not at (x,y). Valid directions for (dx, dy) are (0,1), (0,-1),
+;;; (1,0), and (-1,0).
+(defun try-move (s x y dx dy)
+  (let ((origin (get-square s x y))
+        (target (get-square s (+ x dx) (+ y dy)))
+        (pastTarget (get-square s (+ x (+ dx dx)) (+ y (+ dy dy))))
+        (targetX (+ x dx))
+        (targetY (+ y dy))
+        (pastTargetX (+ x (+ dx dx)))
+        (pastTargetY (+ y (+ dy dy))))
+    (cond ((or (> dx 1) (> dy 1) (< dx -1) (< dy -1) (= dx dy) (= dx (- dy))) nil)
+          ((not (or (isKeeper origin) (isKeeperStar origin))) nil)
+          ((isBlank target)
+           (if (isKeeper origin)
+               (set-square (set-square s x y blank) targetX targetY keeper)
+             (set-square (set-square s x y star) targetX targetY keeper)))
+          ((isStar target)
+           (if (isKeeper origin)
+               (set-square (set-square s x y blank) targetX targetY keeperstar)
+             (set-square (set-square s x y star) targetX targetY keeperstar)))
+          ((isBox target)
+           (cond ((and (isKeeper origin) (isBlank pastTarget))
+                  (set-square (set-square (set-square s x y blank) targetX targetY keeper) pastTargetX pastTargetY box))
+                 ((and (isKeeper origin) (isStar pastTarget))
+                  (set-square (set-square (set-square s x y blank) targetX targetY keeper) pastTargetX pastTargetY boxstar))
+                 ((and (isKeeperStar origin) (isBlank pastTarget))
+                  (set-square (set-square (set-square s x y star) targetX targetY keeper) pastTargetX pastTargetY box))
+                 ((and (isKeeperStar origin) (isStar pastTarget))
+                  (set-square (set-square (set-square s x y star) targetX targetY keeper) pastTargetX pastTargetY boxstar))))
+          ((isBoxStar target)
+           (cond ((and (isKeeper origin) (isBlank pastTarget))
+                  (set-square (set-square (set-square s x y blank) targetX targetY keeperstar) pastTargetX pastTargetY box))
+                 ((and (isKeeper origin) (isStar pastTarget))
+                  (set-square (set-square (set-square s x y blank) targetX targetY keeperstar) pastTargetX pastTargetY boxstar))
+                 ((and (isKeeperStar origin) (isBlank pastTarget))
+                  (set-square (set-square (set-square s x y star) targetX targetY keeperstar) pastTargetX pastTargetY box))
+                 ((and (isKeeperStar origin) (isStar pastTarget))
+                  (set-square (set-square (set-square s x y star) targetX targetY keeperstar) pastTargetX pastTargetY boxstar)))))))
 
 ;;; h0 (s)
 ;;;
