@@ -1,0 +1,15 @@
+The graph coloring problem with graph 1 and 3 colors is unsatisfiable.
+
+The graph coloring problem with graph 1 and 4 colors is satisfiable. The results
+of the sat solver indicates that at minimum, 4 colors is necessary to color
+graph1. A coloring that can color graph 1 is as follows.
+
+Node 1 gets color 4.
+Node 2 gets color 3.
+Node 3 gets color 2.
+Node 4 gets color 3.
+Node 5 gets color 1.
+Node 6 gets color 2.
+Node 7 gets color 1.
+
+The minimum number of colors required to properly color graph 2 is 8 colors.
