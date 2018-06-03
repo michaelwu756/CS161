@@ -1,0 +1,208 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\begin{document}
+\title{Computer Science 161, Homework 5}
+\date{June 5th, 2018}
+\author{Michael Wu\\UID: 404751542}
+\maketitle
+
+\section*{Problem 1}
+
+\paragraph{a)}
+
+Neither. Using inference rules this statement \(S\) becomes the following.
+\[S=(\text{Smoke}\land\neg\text{Fire})\lor\text{Smoke}\lor\neg\text{Fire}\]
+The following truth table describes the possible worlds that this statement can apply to.
+\begin{center}
+        \begin{tabular}{c|c|c}
+                Smoke & Fire & \(S\)\\
+                \hline
+                False & False & True\\
+                False & True & False\\
+                True & False & True\\
+                True & True & True
+        \end{tabular}
+\end{center}
+This statement is true in some worlds and false in others, thus it is neither valid nor unsatisfiable.
+
+\paragraph{b)}
+
+Neither. Using inference rules this statement \(S\) becomes the following.
+\[S=(\text{Smoke}\land\neg\text{Fire})\lor (\neg\text{Smoke}\land\neg\text{Heat}) \lor \text{Fire}\]
+The following truth table describes the possible worlds that this statement can apply to.
+\begin{center}
+        \begin{tabular}{c|c|c|c}
+                Smoke & Fire & Heat & \(S\)\\
+                \hline
+                False & False & False & True\\
+                False & False & True & False\\
+                False & True & False & True\\
+                False & True & True & True\\
+                True & False & False & True\\
+                True & False & True & True\\
+                True & True & False & True\\
+                True & True & True & True
+        \end{tabular}
+\end{center}
+This statement is true in some worlds and false in others, thus it is neither valid nor unsatisfiable.
+
+\paragraph{c)}
+
+Valid. Using inference rules this statement \(S\) becomes the following.
+\[S=(\neg\text{Smoke}\lor\neg\text{Heat}\lor\text{Fire})\lor(\text{Smoke}\land\text{Heat}\land\neg\text{Fire})\]
+The following truth table describes the possible worlds that this statement can apply to.
+\begin{center}
+        \begin{tabular}{c|c|c|c}
+                Smoke & Fire & Heat & \(S\)\\
+                \hline
+                False & False & False & True\\
+                False & False & True & True\\
+                False & True & False & True\\
+                False & True & True & True\\
+                True & False & False & True\\
+                True & False & True & True\\
+                True & True & False & True\\
+                True & True & True & True
+        \end{tabular}
+\end{center}
+This statement is true in all worlds, thus it is valid.
+
+\section*{Problem 2}
+
+\paragraph{a)}
+
+Let the following be our variables.
+\begin{align*}
+        A &= \text{The unicorn is mythical.}\\
+        B &= \text{The unicorn is mortal.}\\
+        C &= \text{The unicorn is a mammal.}\\
+        D &= \text{The unicorn is horned.}\\
+        E &= \text{The unicorn is magical.}
+\end{align*}
+Then our knowledge base is the following
+\begin{align*}
+        A&\implies \neg B\\
+        \neg A &\implies B \land C\\
+        \neg B \lor C &\implies D\\
+        D &\implies E
+\end{align*}
+
+\paragraph{b)}
+
+\[(\neg A \lor \neg B)\land(A \lor B)\land(A \lor C)\land(B \lor D)\land(\neg C \lor D)\land(\neg D \lor E)\]
+
+\paragraph{c)}
+
+We will first use resolution to see if we can prove \(A\). If our knowledge base is unsatisfiable when we add \(\neg A\), then we have proven \(A\).
+\begin{gather*}
+        (A \lor B)\land\neg A\implies B\\
+        (A \lor C)\land\neg A\implies C\\
+        (\neg C \lor D)\land C\implies D\\
+        (\neg D \lor E)\land D\implies E
+\end{gather*}
+We have generated a world \((\neg A, B, C, D, E)\) which shows that the knowledge base is satisfiable if we add \(\neg A\),
+so we cannot prove that the unicorn is mythical.
+
+Next we will use resolution to see if we can prove \(E\). If our knowledge base is unsatisfiable when we add \(\neg E\), then we have proven \(E\).
+\begin{gather*}
+        (\neg D \lor E)\land\neg E\implies\neg D\\
+        (\neg C \lor D)\land\neg D\implies\neg C\\
+        (B \lor D)\land\neg D\implies B\\
+        (A \lor C)\land\neg C\implies A\\
+        (\neg A \lor \neg B)\land B\implies\neg A
+\end{gather*}
+We have \(A\) and \(\neg A\), so this knowledge base is unsatisfiable. Thus we have proven \(E\), and the unicorn must be magical.
+
+Finally, we will use resolution to see if we can prove \(D\). If our knowledge base is unsatisfiable when we add \(\neg D\), then we have proven \(D\).
+\begin{gather*}
+        (B \lor D)\land\neg D\implies B\\
+        (\neg C \lor D)\land\neg D\implies\neg C\\
+        (\neg A \lor \neg B)\land B\implies\neg A\\
+        (A \lor C)\land\neg A\implies C
+\end{gather*}
+We have \(\neg C\) and \(C\), so this knowledge base is unsatisfiable. Thus we have proven \(D\), and the unicorn must be horned.
+
+\section*{Problem 3}
+
+\paragraph{a)}
+
+\[\{x/\text{A},y/\text{B},z/\text{B}\}\]
+
+\paragraph{b)}
+
+No unification exists. When trying to unify, we would set \(y\) to \(G(x,x)\), but then this means that we would try to set \(x\) to \(A\) and
+\(x\) to \(B\) at the same time.
+
+\paragraph{c)}
+
+\[\{y/\text{John}, x/\text{John}\}\]
+
+\paragraph{d)}
+
+No unification exists. When trying to unify, we would set \(x\) to \(\text{Father}(y)\) and \(y\) at the same time, which would be inconsistent.
+
+\section*{Problem 4}
+
+\paragraph{a)}
+
+\begin{enumerate}
+        \item \(\forall x\,(\text{Food}(x)\implies\text{Likes}(\text{John},x))\)
+        \item \(\text{Food}(\text{Apples})\)
+        \item \(\text{Food}(\text{Chicken})\)
+        \item \(\forall x,y\,(\text{Eats}(x,y)\land\neg \text{KilledBy}(x,y)\implies\text{Food}(y))\)
+        \item \(\forall x,y\,(\text{KilledBy}(x,y)\implies \neg \text{Alive}(x))\)
+        \item \(\text{Eats}(\text{Bill},\text{Peanuts})\land \text{Alive}(\text{Bill})\)
+        \item \(\forall x\,(\text{Eats}(\text{Bill},x)\implies\text{Eats}(\text{Sue},x))\)
+\end{enumerate}
+
+\paragraph{b)}
+
+We have the following clauses.
+\begin{enumerate}
+        \item \(\neg\text{Food}(x)\lor\text{Likes}(\text{John},x)\)
+        \item \(\text{Food}(\text{Apples})\)
+        \item \(\text{Food}(\text{Chicken})\)
+        \item \(\neg\text{Eats}(y,z)\lor \text{KilledBy}(y,z)\lor\text{Food}(z)\)
+        \item \(\neg\text{KilledBy}(a,b)\lor \neg \text{Alive}(a)\)
+        \item \(\text{Eats}(\text{Bill},\text{Peanuts})\)
+        \item \(\text{Alive}(\text{Bill})\)
+        \item \(\neg\text{Eats}(\text{Bill},c)\lor\text{Eats}(\text{Sue},c)\)
+\end{enumerate}
+
+\paragraph{c)}
+
+Assume for contradiction that \(\neg\text{Likes}(\text{John},\text{Peanuts})\). Then we can apply resolution to generate a contradiction as shown
+below.
+\[(\neg\text{Food}(x)\lor\text{Likes}(\text{John},x))\land\neg\text{Likes}(\text{John},\text{Peanuts})\implies\neg\text{Food}(\text{Peanuts})\]
+\begin{multline*}
+        (\neg\text{Eats}(y,z)\lor \text{KilledBy}(y,z)\lor\text{Food}(z))\land\neg\text{Food}(\text{Peanuts})\implies\\
+        \neg\text{Eats}(y,\text{Peanuts})\lor \text{KilledBy}(y,\text{Peanuts})
+\end{multline*}
+\begin{multline*}
+        (\neg\text{Eats}(y,\text{Peanuts})\lor \text{KilledBy}(y,\text{Peanuts}))\land\text{Eats}(\text{Bill},\text{Peanuts})\implies\\
+        \text{KilledBy}(\text{Bill},\text{Peanuts})
+\end{multline*}
+\[(\neg\text{KilledBy}(a,b)\lor \neg \text{Alive}(a))\land\text{KilledBy}(\text{Bill},\text{Peanuts})\implies\neg\text{Alive}(\text{Bill})\]
+This is a contradiction because \(\text{Alive}(\text{Bill})\) is already in our knowledge base, and so our knowledge base is unsatisfiable if
+\(\neg\text{Likes}(\text{John},\text{Peanuts})\). Thus we have proven that John likes peanuts.
+
+\paragraph{d)}
+
+\[(\neg\text{Eats}(\text{Bill},c)\lor\text{Eats}(\text{Sue},c))\land\text{Eats}(\text{Bill},\text{Peanuts})\implies\text{Eats}(\text{Sue},\text{Peanuts})\]
+There are no other ways to prove that Sue eats anything else, so our only possible answer is that Sue eats peanuts.
+
+\paragraph{e)}
+
+The replacement clauses are as follows.
+\begin{enumerate}
+        \item \(\text{Eats}(d,e)\lor \text{Die}(d)\)
+        \item \(\neg \text{Die}(f)\lor \neg \text{Alive}(f)\)
+        \item \(\text{Alive}(\text{Bill})\)
+\end{enumerate}
+Then by resolution we can prove the following.
+\[(\neg \text{Die}(f)\lor \neg \text{Alive}(f))\land \text{Alive}(\text{Bill})\implies \neg\text{Die}(\text{Bill})\]
+\[(\text{Eats}(d,e)\lor \text{Die}(d))\land \neg\text{Die}(\text{Bill})\implies \text{Eats}(\text{Bill},e)\]
+\[(\neg\text{Eats}(\text{Bill},c)\lor\text{Eats}(\text{Sue},c))\land\text{Eats}(\text{Bill},e)\implies \text{Eats}(\text{Sue},e)\]
+So \(\exists e\,\text{Eats}(\text{Sue},e)\land\text{Eats}(\text{Bill},e)\), but we do not have information to determine what \(e\) could be.
+
+\end{document}
