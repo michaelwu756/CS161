@@ -1,0 +1,146 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\begin{document}
+\title{Computer Science 161, Homework 6}
+\date{June 12th, 2018}
+\author{Michael Wu\\UID: 404751542}
+\maketitle
+
+\section*{Problem 1}
+
+\paragraph{a)}
+
+Let \(O=\text{Oil}\), \(G=\text{Gas}\), and \(T=\text{Test}\). Then we have the following.
+\begin{gather*}
+        \Pr(O=\text{True}) = \frac{1}{2}\\
+        \Pr(G=\text{True}\mid O=\text{True}) = 0\\
+        \Pr(G=\text{True}\mid O=\text{False}) = \frac{2}{5}\\
+        \Pr(T=\text{True}\mid O=\text{False}, G=\text{False}) = \frac{1}{10}\\
+        \Pr(T=\text{True}\mid O=\text{False}, G=\text{True}) = \frac{3}{10}\\
+        \Pr(T=\text{True}\mid O=\text{True}, G=\text{False}) = \frac{9}{10}\\
+        \Pr(T=\text{True}\mid O=\text{True}, G=\text{True}) = \text{Undefined}\\
+\end{gather*}
+
+\paragraph{b)}
+
+We wish to find \(\Pr(O=\text{True}\mid T=\text{True})\). This can be done as follows.
+\begin{align*}
+        \Pr(O=\text{True}\mid T=\text{True}) &= \frac{\Pr(O=\text{True}, T=\text{True})}{\Pr(T=\text{True})}\\
+        &=\frac{\frac{1}{2}\times\frac{3}{10}}{\frac{1}{2}\times\frac{3}{10} + \frac{1}{2}\times\frac{2}{5}\times\frac{9}{10} + \frac{1}{2}\times\frac{3}{5}\times\frac{1}{10}}\\
+        &=\frac{5}{12}
+\end{align*}
+
+\section*{Problem 2}
+
+\paragraph{a)}
+
+\begin{multline*}
+        \Pr(A,B,C,D,E,F,G,H)=\Pr(H\mid E,F)\Pr(G\mid F)\Pr(F\mid C,D)\Pr(E\mid B)\\
+        \Pr(D\mid A,B)\Pr(C\mid A)\Pr(B)\Pr(A)
+\end{multline*}
+
+\paragraph{b)}
+
+\begin{multline*}
+        \Pr(E,F,G,H)=\Pr(H\mid E,F)\Pr(G\mid F)\sum_A\Pr(A)\sum_B\Pr(E\mid B)\Pr(B)\\
+        \sum_C\Pr(C\mid A)\sum_D\Pr(D\mid A,B)\Pr(F\mid C,D)
+\end{multline*}
+\begin{multline*}
+        \Pr(E,F,G,H)=f_8(E,F,H)f_7(F,G)\sum_Af_6(A)\sum_Bf_5(B,E)f_4(B)\\
+        \sum_Cf_3(A,C)\sum_Df_2(A,B,D)f_1(C,D,F)
+\end{multline*}
+\begin{gather*}
+        f_9(A,B,C,F)=\sum_Df_2(A,B,D)f_1(C,D,F)\\
+        f_{10}(A,B,F)=\sum_Cf_3(A,C)f_9(A,B,C,F)\\
+        f_{11}(A,E,F)=\sum_Bf_5(B,E)f_4(B)f_{10}(A,B,F)\\
+        f_{12}(E,F)=\sum_Af_6(A)f_{11}(A,E,F)\\
+        f_{13}(E,F,G,H)=f_8(E,F,H)f_7(F,G)f_{12}(E,F)\\
+        \Pr(E,F,G,H)=f_{13}(E,F,G,H)
+\end{gather*}
+
+\paragraph{c)}
+
+\begin{multline*}
+        \Pr(a,\lnot b,c,d,\lnot e,f,\lnot g,h)=\Pr(h\mid \lnot e,f)\Pr(\lnot g\mid f)\Pr(f\mid c,d)\Pr(\lnot e\mid \lnot b)\\
+        \Pr(d\mid a,\lnot b)\Pr(c\mid a)\Pr(\lnot b)\Pr(a)
+\end{multline*}
+\begin{multline*}
+        \Pr(a,\lnot b,c,d,\lnot e,f,\lnot g,h)=\Pr(h\mid \lnot e,f)\Pr(\lnot g\mid f)\Pr(f\mid c,d)\\
+        \times0.1\times0.6\times\Pr(c\mid a)\times0.3\times0.2
+\end{multline*}
+\[\Pr(a,\lnot b,c,d,\lnot e,f,\lnot g,h)=0.0036\Pr(h\mid \lnot e,f)\Pr(\lnot g\mid f)\Pr(f\mid c,d)\Pr(c\mid a)\]
+
+\paragraph{d)}
+
+Because \(A\) and \(B\) are independent of each other, we have the following.
+\[\Pr(\lnot a, b)=\Pr(\lnot a)\Pr(b)=0.8\times 0.7 = 0.56\]
+Since \(E\) only depends on \(B\), we have the following.
+\begin{align*}
+        \Pr(\lnot e \mid a) &= \Pr(\lnot e)\\
+        &=\Pr(\lnot e\mid b)\Pr(b) + \Pr(\lnot e\mid \lnot b)\Pr(\lnot b)\\
+        &=0.9\times 0.7 + 0.1\times 0.3\\
+        &=0.66
+\end{align*}
+
+\paragraph{e)}
+
+\begin{enumerate}
+        \item \(A\) is independent of \(B\) and \(E\).
+        \item \(B\) is independent of \(A\) and \(C\).
+        \item Given \(A\), \(C\) is conditionally independent of \(B\), \(D\), and \(E\).
+        \item Given \(A\) and \(B\), \(D\) is conditionally independent of \(C\) and \(E\).
+        \item Given \(B\), \(E\) is conditionally independent of \(A\), \(C\), \(D\), \(F\), and \(G\).
+        \item Given \(C\) and \(D\), \(F\) is conditionally independent of \(A\), \(B\), and \(E\).
+        \item Given \(F\), \(G\) is conditionally independent of \(A\), \(B\), \(C\), \(D\), \(E\), and \(H\).
+        \item Given \(E\) and \(F\), \(H\) is conditionally independent of \(A\), \(B\), \(C\), \(D\), and \(G\).
+\end{enumerate}
+
+\paragraph{f)}
+
+\[A,B,C,F\]
+
+\paragraph{g)}
+
+\[f(A,B,D,E)=\Pr(D\mid A,B)\Pr(E\mid B)\]
+\[
+        \begin{array}{c|c|c|c|c}
+                A & B & D & E & f(A,B,D,E)\\
+                \hline
+                0 & 0 & 0 & 0 & 0.02\\
+                0 & 0 & 0 & 1 & 0.18\\
+                0 & 0 & 1 & 0 & 0.08\\
+                0 & 0 & 1 & 1 & 0.72\\
+                0 & 1 & 0 & 0 & 0.81\\
+                0 & 1 & 0 & 1 & 0.09\\
+                0 & 1 & 1 & 0 & 0.09\\
+                0 & 1 & 1 & 1 & 0.01\\
+                1 & 0 & 0 & 0 & 0.04\\
+                1 & 0 & 0 & 1 & 0.36\\
+                1 & 0 & 1 & 0 & 0.06\\
+                1 & 0 & 1 & 1 & 0.54\\
+                1 & 1 & 0 & 0 & 0.45\\
+                1 & 1 & 0 & 1 & 0.05\\
+                1 & 1 & 1 & 0 & 0.45\\
+                1 & 1 & 1 & 1 & 0.05
+        \end{array}
+\]
+
+\paragraph{h)}
+
+\[f(A,B,E)=\sum_D\Pr(D\mid A,B)\Pr(E\mid B)\]
+\[
+        \begin{array}{c|c|c|c}
+                A & B & E & f(A,B,E)\\
+                \hline
+                0 & 0 & 0 & 0.1\\
+                0 & 0 & 1 & 0.9\\
+                0 & 1 & 0 & 0.9\\
+                0 & 1 & 1 & 0.1\\
+                1 & 0 & 0 & 0.1\\
+                1 & 0 & 1 & 0.9\\
+                1 & 1 & 0 & 0.9\\
+                1 & 1 & 1 & 0.1
+        \end{array}
+\]
+
+\end{document}
